@@ -3,6 +3,8 @@ import { PrismaAdapter } from "@auth/prisma-adapter";
 import { prisma } from "@/prisma";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { comparePassword } from "./lib/password-utils";
+import * as jwt from "jsonwebtoken";
+import { JWT } from "next-auth/jwt";
 export const { handlers, auth, signIn, signOut } = NextAuth({
   useSecureCookies: process.env.NODE_ENV === "production",
   trustHost: true,
@@ -26,29 +28,40 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         const password = credentials.password as string;
 
         if (!email || !password) {
-          throw new Error("Invalid credentials");
+          return null;
         }
+
         const user = await prisma.user.findUnique({
-          where: {
-            email,
-          },
+          where: { email },
         });
+
         if (!user || !user.hashedPassword) {
-          throw new Error("Invalid credentials");
+          return null;
         }
+
         const passwordMatch = await comparePassword(
           password,
-          user?.hashedPassword,
+          user.hashedPassword,
         );
+
         if (!passwordMatch) {
-          throw new Error("Invalid credentials");
+          return null;
         }
+
         return user;
       },
     }),
   ],
   session: {
     strategy: "jwt",
+  },
+  jwt: {
+    encode: async ({ secret, token }) => {
+      return jwt.sign(token as jwt.JwtPayload, secret as string);
+    },
+    decode: async ({ secret, token }) => {
+      return jwt.verify(token as string, secret as string) as JWT;
+    },
   },
   pages: {
     signIn: "/signin",
