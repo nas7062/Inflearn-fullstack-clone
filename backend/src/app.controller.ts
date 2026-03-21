@@ -17,7 +17,6 @@ export class AppController {
   @UseGuards(AccessTokenGuard)
   @ApiBearerAuth('access-token')
   testUser(@Req() req: Request & { user: JwtPayload }) {
-    console.log(req.user);
-    return 'test complete';
+    return req.user.email;
   }
 }
