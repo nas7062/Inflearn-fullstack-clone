@@ -1,17 +1,82 @@
-import { Injectable } from '@nestjs/common';
-import { Course } from '@prisma/client';
+import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { CreateCourseDto } from './dto/create-course-dto';
+import { Course, Prisma } from '@prisma/client';
+import { UpdateCourseDto } from './dto/update-course-dto';
 
 @Injectable()
 export class CoursesService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async create(userId : string , createCourseDto : CreateCourseDto) : Promise<Course> {
-     return this.prisma.course.create({
-        data : {
-            ...createCourseDto,
-            instructorId : userId,
-        }
-     })   
+  async create(userId: string, createCourseDto: CreateCourseDto): Promise<Course> {
+    const { categoryIds, ...rest } = createCourseDto;
+    return this.prisma.course.create({
+      data: {
+        ...rest,
+        categories: {
+          connect: categoryIds?.map((id) => ({ id })) || [],
+        },
+        instructorId: userId,
+      },
+    });
+  }
+
+  async findAll(params: {
+    skip?: number;
+    take?: number;
+    cursor?: Prisma.CourseWhereUniqueInput;
+    where?: Prisma.CourseWhereInput;
+    orderBy?: Prisma.CourseOrderByWithRelationInput;
+  }): Promise<Course[]> {
+    const { skip, take, cursor, where, orderBy } = params;
+    return this.prisma.course.findMany({
+      skip,
+      take,
+      cursor,
+      where,
+      orderBy,
+    });
+  }
+  async findOne(id: string, include?: string[]): Promise<Course | null> {
+    const includeObject = {};
+    if (include) {
+      include.forEach((item) => {
+        includeObject[item] = true;
+      });
+    }
+    const course = await this.prisma.course.findUnique({
+      where: { id },
+      include: include && include?.length > 0 ? includeObject : undefined,
+    });
+
+    if (!course) {
+      throw new NotFoundException('course를 찾을 수 없습니다.');
+    }
+    return course;
+  }
+  async update(id: string, userId: string, updateCourseDto: UpdateCourseDto): Promise<Course | null> {
+    const course = await this.findOne(id);
+    if (!course) {
+      throw new NotFoundException('course를 찾을 수 없습니다.');
+    }
+    if (course.instructorId !== userId) {
+      throw new ForbiddenException('소유자만 수정이 가능합니다.');
+    }
+    return this.prisma.course.update({
+      where: { id },
+      data: updateCourseDto,
+    });
+  }
+  async remove(id: string, userId: string): Promise<Course | null> {
+    const course = await this.findOne(id);
+    if (!course) {
+      throw new NotFoundException('course를 찾을 수 없습니다.');
+    }
+    if (course.instructorId !== userId) {
+      throw new ForbiddenException('소유자만 삭제가 가능합니다.');
+    }
+    return this.prisma.course.delete({
+      where: { id },
+    });
   }
 }
