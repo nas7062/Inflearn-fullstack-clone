@@ -3,20 +3,18 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateCourseDto } from './dto/create-course-dto';
 import { Course, Prisma } from '@prisma/client';
 import { UpdateCourseDto } from './dto/update-course-dto';
-
+import slugify from 'slug';
 @Injectable()
 export class CoursesService {
   constructor(private readonly prisma: PrismaService) {}
 
   async create(userId: string, createCourseDto: CreateCourseDto): Promise<Course> {
-    const { categoryIds, ...rest } = createCourseDto;
     return this.prisma.course.create({
       data: {
-        ...rest,
-        categories: {
-          connect: categoryIds?.map((id) => ({ id })) || [],
-        },
+        title: createCourseDto.title,
+        slug: slugify(createCourseDto.title),
         instructorId: userId,
+        status: 'DRAFT',
       },
     });
   }
@@ -59,15 +57,24 @@ export class CoursesService {
     if (!course) {
       throw new NotFoundException('course를 찾을 수 없습니다.');
     }
+    const { categoryIds, ...rest } = updateCourseDto;
+    let data: Prisma.CourseUpdateInput = {
+      ...rest,
+    };
+    if (categoryIds && categoryIds.length > 0) {
+      data.categories = {
+        connect: categoryIds.map((id) => ({ id })),
+      };
+    }
     if (course.instructorId !== userId) {
       throw new ForbiddenException('소유자만 수정이 가능합니다.');
     }
     return this.prisma.course.update({
       where: { id },
-      data: updateCourseDto,
+      data,
     });
   }
-  async remove(id: string, userId: string): Promise<Course | null> {
+  async remove(id: string, userId: string) {
     const course = await this.findOne(id);
     if (!course) {
       throw new NotFoundException('course를 찾을 수 없습니다.');
@@ -75,8 +82,9 @@ export class CoursesService {
     if (course.instructorId !== userId) {
       throw new ForbiddenException('소유자만 삭제가 가능합니다.');
     }
-    return this.prisma.course.delete({
+    await this.prisma.course.delete({
       where: { id },
     });
+    return course;
   }
 }

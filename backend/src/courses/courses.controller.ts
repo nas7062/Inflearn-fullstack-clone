@@ -12,12 +12,13 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { CoursesService } from './courses.service';
-import { ApiBearerAuth, ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOkResponse, ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { AccessTokenGuard } from 'src/auth/guards/access-token.guard';
 import { CreateCourseDto } from './dto/create-course-dto';
 import { JwtPayload } from 'src/types/express';
 import { Course, Prisma } from '@prisma/client';
 import { UpdateCourseDto } from './dto/update-course-dto';
+import { CourseResponseDto } from './dto/response-course-dto';
 
 @ApiTags('courses')
 @Controller('courses')
@@ -73,7 +74,8 @@ export class CoursesController {
     }
   }
   @Get(':id')
-  @ApiParam({ name: 'include', required: true, description: 'section,lectures, review 포함 관계 지정' })
+  @ApiParam({ name: 'include', required: false, description: 'section,lectures, review 포함 관계 지정' })
+  @ApiOkResponse({ description: '코스 상세 조회', type: CourseResponseDto })
   findOne(@Param('id', ParseUUIDPipe) id: string, @Query('include') include?: string) {
     const includeArray = include ? include.split(',') : undefined;
     return this.coursesService.findOne(id, includeArray);
