@@ -20,7 +20,7 @@ import { Course, Prisma } from '@prisma/client';
 import { UpdateCourseDto } from './dto/update-course-dto';
 import { CourseResponseDto } from './dto/response-course-dto';
 
-@ApiTags('courses')
+@ApiTags('코스')
 @Controller('courses')
 export class CoursesController {
   constructor(private readonly coursesService: CoursesService) {}
