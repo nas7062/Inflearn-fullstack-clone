@@ -8,47 +8,47 @@ import { updateLectureDto } from './dto/update-lecture-dto';
 export class LecturesService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async create(sectionId: string, createLectureDto: createLectureDto, userId: string): Promise<Lecture> {
-    const section = await this.prisma.section.findUnique({
-      where: {
-        id: sectionId,
-      },
-      include: {
-        course: true,
-      },
-    });
-    if (!section) {
-      throw new NotFoundException('Section not found');
-    }
-    if (section.course.instructorId !== userId) {
-      throw new ForbiddenException('You are not the instructor of this section');
-    }
-    const lastLecture = await this.prisma.lecture.findFirst({
-      where: {
-        sectionId: sectionId,
-      },
-      orderBy: {
-        order: 'desc',
-      },
-    });
-    const order = lastLecture ? lastLecture.order + 1 : 0;
-    return this.prisma.lecture.create({
-      data: {
-        ...createLectureDto,
-        order,
-        section: {
-          connect: {
-            id: sectionId,
+    async create(sectionId: string, createLectureDto: createLectureDto, userId: string): Promise<Lecture> {
+      const section = await this.prisma.section.findUnique({
+        where: {
+          id: sectionId,
+        },
+        include: {
+          course: true,
+        },
+      });
+      if (!section) {
+        throw new NotFoundException('Section not found');
+      }
+      if (section.course.instructorId !== userId) {
+        throw new ForbiddenException('You are not the instructor of this section');
+      }
+      const lastLecture = await this.prisma.lecture.findFirst({
+        where: {
+          sectionId: sectionId,
+        },
+        orderBy: {
+          order: 'desc',
+        },
+      });
+      const order = lastLecture ? lastLecture.order + 1 : 0;
+      return this.prisma.lecture.create({
+        data: {
+          ...createLectureDto,
+          order,
+          section: {
+            connect: {
+              id: sectionId,
+            },
+          },
+          course: {
+            connect: {
+              id: section.courseId,
+            },
           },
         },
-        course: {
-          connect: {
-            id: section.courseId,
-          },
-        },
-      },
-    });
-  }
+      });
+    }
 
   async update(lectureId: string, userId: string, updateLectureDto: updateLectureDto): Promise<Lecture> {
     const lecture = await this.prisma.lecture.findUnique({

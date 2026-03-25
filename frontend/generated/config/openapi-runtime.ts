@@ -1,4 +1,4 @@
-import { CreateClientConfig } from "../openapi-client/client";
+import { CreateClientConfig } from "../openapi-client/client/types.gen";
 import { getCookie } from "cookies-next/server";
 import { cookies } from "next/headers";
 const AUTH_COOKIE_NAME =
@@ -10,7 +10,7 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
 
 export const createClientConfig: CreateClientConfig = (config) => ({
   ...config,
-  baseURL: API_URL,
+  baseUrl: API_URL,
 
   async auth() {
     return getCookie(AUTH_COOKIE_NAME, { cookies });
