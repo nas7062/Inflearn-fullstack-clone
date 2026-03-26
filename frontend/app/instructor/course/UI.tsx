@@ -12,9 +12,9 @@ import { Button } from "@/components/ui/button";
 import { Pencil, X } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { Course } from "@/generated/openapi-client";
+import { CourseResponseDto } from "@/generated/openapi-client";
 
-export default function UI({ courses }: { courses: Course[] }) {
+export default function UI({ courses }: { courses: CourseResponseDto[] }) {
   const router = useRouter();
 
   return (
@@ -36,7 +36,7 @@ export default function UI({ courses }: { courses: Course[] }) {
         </TableHeader>
         <TableBody>
           {courses && courses.length > 0 ? (
-            courses.map((course: Course) => {
+            courses.map((course: CourseResponseDto) => {
               const avgRating = 0;
               const totalStudents = 0;
               const totalQuestions = 0;

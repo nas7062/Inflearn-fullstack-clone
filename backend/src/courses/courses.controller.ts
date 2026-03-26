@@ -38,13 +38,14 @@ export class CoursesController {
   @ApiQuery({ name: 'categoryId', required: false })
   @ApiQuery({ name: 'skip', required: false })
   @ApiQuery({ name: 'take', required: false })
+  @ApiOkResponse({ type: [CourseResponseDto] })
   findAll(
     @Query('title') title?: string,
     @Query('level') level?: string,
     @Query('categoryId') categoryId?: string,
     @Query('skip') skip?: string,
     @Query('take') take?: string,
-  ) {
+  ): Promise<Course[] | undefined> {
     const where: Prisma.CourseWhereInput = {};
     if (title) {
       where.title = {
@@ -62,16 +63,15 @@ export class CoursesController {
         },
       };
     }
-    if (skip) {
-      return this.coursesService.findAll({
-        where,
-        skip: skip ? parseInt(skip) : undefined,
-        take: take ? parseInt(take) : undefined,
-        orderBy: {
-          createdAt: 'desc',
-        },
-      });
-    }
+
+    return this.coursesService.findAll({
+      where,
+      skip: skip ? parseInt(skip) : undefined,
+      take: take ? parseInt(take) : undefined,
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
   }
   @Get(':id')
   @ApiParam({ name: 'include', required: false, description: 'section,lectures, review 포함 관계 지정' })
