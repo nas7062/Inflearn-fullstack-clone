@@ -5,7 +5,7 @@ import Providers from "@/config/providers";
 import { getAllCategories } from "@/lib/api";
 import Header from "@/components/Header";
 import { CategoryDto } from "@/generated/openapi-client";
-
+import { Toaster } from "sonner";
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -37,6 +37,7 @@ export default async function RootLayout({
           <Header categories={data ?? ([] as CategoryDto[])} />
           {children}
         </Providers>
+        <Toaster />
       </body>
     </html>
   );

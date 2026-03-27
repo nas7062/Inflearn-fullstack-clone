@@ -20,7 +20,7 @@ export type InstructorDto = {
 export type CategoryDto = {
   id: string;
   name: string;
-  slug?: string;
+  slug: string;
 };
 
 export type SectionDto = {
@@ -198,7 +198,7 @@ export type CoursesControllerCreateData = {
 };
 
 export type CoursesControllerCreateResponses = {
-  201: unknown;
+  201: CourseResponseDto;
 };
 
 export type CoursesControllerRemoveData = {

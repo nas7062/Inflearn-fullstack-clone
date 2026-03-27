@@ -12,7 +12,15 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { CoursesService } from './courses.service';
-import { ApiBearerAuth, ApiOkResponse, ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiCreatedResponse,
+  ApiOkResponse,
+  ApiOperation,
+  ApiParam,
+  ApiQuery,
+  ApiTags,
+} from '@nestjs/swagger';
 import { AccessTokenGuard } from 'src/auth/guards/access-token.guard';
 import { CreateCourseDto } from './dto/create-course-dto';
 import { JwtPayload } from 'src/types/express';
@@ -28,6 +36,9 @@ export class CoursesController {
   @Post()
   @UseGuards(AccessTokenGuard)
   @ApiBearerAuth('access-token')
+  @ApiOperation({ summary: '코스 생성' })
+  @ApiCreatedResponse({ description: '코스 생성 성공', type: CourseResponseDto })
+  @ApiOkResponse({ description: '코스 생성 성공', type: CourseResponseDto })
   create(@Req() req: Request & { user: JwtPayload }, @Body() createCourseDto: CreateCourseDto): Promise<Course> {
     return this.coursesService.create(req.user.sub, createCourseDto);
   }

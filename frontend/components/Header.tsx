@@ -11,8 +11,10 @@ import { CategoryDto } from "@/generated/openapi-client";
 
 export default function Header({ categories }: { categories: CategoryDto[] }) {
   const pathname = usePathname();
+  const isSiteHeaderNeeded = !pathname.includes("/courses");
   const isCategoryNeeded = pathname == "/" || pathname.includes("/courses");
 
+  if (!isSiteHeaderNeeded) return null;
   return (
     <header className="site-header w-full border-b bg-white">
       {/* 상단 헤더 */}

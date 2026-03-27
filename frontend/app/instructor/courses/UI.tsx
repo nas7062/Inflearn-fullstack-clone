@@ -48,13 +48,7 @@ export default function UI({ courses }: { courses: CourseResponseDto[] }) {
               return (
                 <TableRow key={course.id}>
                   <TableCell>
-                    <Image
-                      src={course.thumbnailUrl || "/logo/inflearn.png"}
-                      alt={course.title}
-                      width={80}
-                      height={80}
-                      className="rounded bg-white border object-contain"
-                    />
+                    <h2 className="text-lg font-bold">"image"</h2>
                   </TableCell>
                   <TableCell>{course.title}</TableCell>
                   <TableCell>{avgRating}</TableCell>
