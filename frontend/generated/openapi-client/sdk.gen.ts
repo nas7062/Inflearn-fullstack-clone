@@ -28,6 +28,9 @@ export const appControllerTestUser = <ThrowOnError extends boolean = false>(opti
 
 export const coursesControllerFindAll = <ThrowOnError extends boolean = false>(options?: Options<CoursesControllerFindAllData, ThrowOnError>) => (options?.client ?? client).get<CoursesControllerFindAllResponses, unknown, ThrowOnError>({ url: '/courses', ...options });
 
+/**
+ * 코스 생성
+ */
 export const coursesControllerCreate = <ThrowOnError extends boolean = false>(options: Options<CoursesControllerCreateData, ThrowOnError>) => (options.client ?? client).post<CoursesControllerCreateResponses, unknown, ThrowOnError>({
     security: [{ scheme: 'bearer', type: 'http' }],
     url: '/courses',

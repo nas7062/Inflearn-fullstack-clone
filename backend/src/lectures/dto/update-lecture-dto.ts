@@ -1,8 +1,8 @@
 import { ApiProperty, PartialType } from '@nestjs/swagger';
 import { IsBoolean, IsNumber, IsObject, IsOptional, IsString } from 'class-validator';
-import { createLectureDto } from './create-lecture-dto';
+import { CreateLectureDto } from './create-lecture-dto';
 
-export class updateLectureDto extends PartialType(createLectureDto) {
+export class updateLectureDto extends PartialType(CreateLectureDto) {
   @ApiProperty({ description: '강의 설명', required: false })
   @IsString()
   @IsOptional()

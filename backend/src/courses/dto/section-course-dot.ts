@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { LectureDto } from 'src/lectures/dto/lecture-dto';
 
 export class SectionDto {
   @ApiProperty()
@@ -9,4 +10,9 @@ export class SectionDto {
 
   @ApiProperty()
   order: number;
+
+  @ApiProperty({ required: false })
+  description?: string;
+  @ApiProperty({ type: [LectureDto] })
+  lectures: Array<LectureDto>;
 }

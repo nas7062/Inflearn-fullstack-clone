@@ -1,11 +1,20 @@
 import { Body, Controller, Delete, Get, Param, ParseUUIDPipe, Patch, Post, Req, UseGuards } from '@nestjs/common';
 import { LecturesService } from './lectures.service';
-import { ApiBearerAuth, ApiBody, ApiOkResponse, ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
-import { createLectureDto } from './dto/create-lecture-dto';
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiCreatedResponse,
+  ApiOkResponse,
+  ApiOperation,
+  ApiParam,
+  ApiTags,
+} from '@nestjs/swagger';
+import { CreateLectureDto } from './dto/create-lecture-dto';
 import { Lecture } from '@prisma/client';
 import { JwtPayload } from 'src/types/express';
 import { AccessTokenGuard } from 'src/auth/guards/access-token.guard';
 import { updateLectureDto } from './dto/update-lecture-dto';
+import { LectureDto } from './dto/lecture-dto';
 
 @Controller('lectures')
 @ApiTags('강의')
@@ -17,12 +26,12 @@ export class LecturesController {
   @ApiBearerAuth('access-token')
   @ApiOperation({ summary: '강의 생성' })
   @ApiParam({ name: 'sectionId', description: '섹션 ID' })
-  @ApiBody({ type: createLectureDto })
-  @ApiOkResponse({ description: '강의 생성 성공', type: createLectureDto })
+  @ApiBody({ type: CreateLectureDto })
+  @ApiCreatedResponse({ description: '강의 생성 성공', type: LectureDto })
   create(
     @Req() req: Request & { user: JwtPayload },
     @Param('sectionId') sectionId: string,
-    @Body() createLectureDto: createLectureDto,
+    @Body() createLectureDto: CreateLectureDto,
   ): Promise<Lecture> {
     return this.lecturesService.create(sectionId, createLectureDto, req.user.sub);
   }
@@ -32,7 +41,7 @@ export class LecturesController {
   @ApiBearerAuth('access-token')
   @ApiOperation({ summary: '강의 상세 조회' })
   @ApiParam({ name: 'lectureId', description: '강의 ID' })
-  @ApiOkResponse({ description: '강의 상세 조회 성공', type: createLectureDto })
+  @ApiOkResponse({ description: '강의 상세 조회 성공', type: LectureDto })
   findOne(
     @Req() req: Request & { user: JwtPayload },
     @Param('lectureId', ParseUUIDPipe) lectureId: string,
@@ -46,7 +55,7 @@ export class LecturesController {
   @ApiOperation({ summary: '강의 수정' })
   @ApiParam({ name: 'lectureId', description: '강의 ID' })
   @ApiBody({ type: updateLectureDto })
-  @ApiOkResponse({ description: '강의 수정 성공', type: createLectureDto })
+  @ApiOkResponse({ description: '강의 수정 성공', type: LectureDto })
   update(
     @Req() req: Request & { user: JwtPayload },
     @Param('lectureId', ParseUUIDPipe) lectureId: string,
@@ -60,7 +69,7 @@ export class LecturesController {
   @ApiBearerAuth('access-token')
   @ApiOperation({ summary: '강의 삭제' })
   @ApiParam({ name: 'lectureId', description: '강의 ID' })
-  @ApiOkResponse({ description: '강의 삭제 성공', type: createLectureDto })
+  @ApiOkResponse({ description: '강의 삭제 성공', type: LectureDto })
   delete(
     @Req() req: Request & { user: JwtPayload },
     @Param('lectureId', ParseUUIDPipe) lectureId: string,

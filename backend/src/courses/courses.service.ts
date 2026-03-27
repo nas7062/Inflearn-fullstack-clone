@@ -35,16 +35,12 @@ export class CoursesService {
       orderBy,
     });
   }
-  async findOne(id: string, include?: string[]): Promise<Course | null> {
+  async findOne(id: string, include?: Prisma.CourseInclude): Promise<Course | null> {
     const includeObject = {};
-    if (include) {
-      include.forEach((item) => {
-        includeObject[item] = true;
-      });
-    }
+
     const course = await this.prisma.course.findUnique({
       where: { id },
-      include: include && include?.length > 0 ? includeObject : undefined,
+      include,
     });
 
     if (!course) {

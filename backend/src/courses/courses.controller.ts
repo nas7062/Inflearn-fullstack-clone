@@ -85,11 +85,38 @@ export class CoursesController {
     });
   }
   @Get(':id')
-  @ApiParam({ name: 'include', required: false, description: 'section,lectures, review 포함 관계 지정' })
+  @ApiQuery({ name: 'include', required: false, description: 'section,lectures, review 포함 관계 지정' })
   @ApiOkResponse({ description: '코스 상세 조회', type: CourseResponseDto })
   findOne(@Param('id', ParseUUIDPipe) id: string, @Query('include') include?: string) {
     const includeArray = include ? include.split(',') : undefined;
-    return this.coursesService.findOne(id, includeArray);
+    let includeObject: Prisma.CourseInclude = {};
+    if (includeArray?.includes('sections') && includeArray.includes('lectures')) {
+      const otherInclude = includeArray.filter((item) => !['sections', 'lectures'].includes(item));
+      includeObject = {
+        sections: {
+          include: {
+            lectures: {
+              orderBy: {
+                order: 'asc',
+              },
+            },
+          },
+          orderBy: {
+            order: 'asc',
+          },
+        },
+        ...otherInclude.map((item) => ({
+          [item]: true,
+        })),
+      };
+    } else {
+      includeObject = {
+        ...includeArray?.map((item) => ({
+          [item]: true,
+        })),
+      } as Prisma.CourseInclude;
+    }
+    return this.coursesService.findOne(id, includeObject);
   }
 
   @Patch(':id')
