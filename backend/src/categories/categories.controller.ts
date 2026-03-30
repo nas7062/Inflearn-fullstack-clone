@@ -14,5 +14,4 @@ export class CategoriesController {
   findAll() {
     return this.categoriesService.findAll();
   }
-  
 }

@@ -9,6 +9,4 @@ import { PrismaModule } from 'src/prisma/prisma.module';
   providers: [CoursesService],
   exports: [CoursesService],
 })
-export class CoursesModule {
-
-}
+export class CoursesModule {}
