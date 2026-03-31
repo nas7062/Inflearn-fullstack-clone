@@ -23,6 +23,7 @@ import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import * as api from "@/lib/api";
 import { notFound } from "next/navigation";
 import { toast } from "sonner";
+import { EditLectureDialog } from "./_components/EditLectureDialog";
 
 export default function EditCurriculumUI({
   initialCourse,
@@ -43,6 +44,8 @@ export default function EditCurriculumUI({
   const [sectionTitles, setSectionTitles] = useState<Record<string, string>>(
     {},
   );
+  const [editLecture, setEditLecture] = useState<LectureDto | null>(null);
+  const [isEditLectureDialogOpen, setIsEditLectureDialogOpen] = useState(false);
 
   // 코스 데이터 조회
   const { data: course } = useQuery<CourseResponseDto>({
@@ -220,8 +223,8 @@ export default function EditCurriculumUI({
   if (!course) return <div>코스 정보를 불러올 수 없습니다.</div>;
 
   return (
-    <div className="space-y-8">
-      <Card>
+    <div className="space-y-8 flex flex-col items-center">
+      <Card className="w-full">
         <CardHeader>
           <CardTitle>
             <h1 className="text-2xl font-bold">커리큘럼</h1>
@@ -230,7 +233,7 @@ export default function EditCurriculumUI({
       </Card>
 
       {course.sections?.map((section: SectionDto, sectionIdx: number) => (
-        <div key={section.id} className="border rounded-lg p-4 bg-white">
+        <div key={section.id} className="border rounded-lg p-4 bg-white w-full">
           <div className="flex items-center justify-between mb-2">
             <div className="flex items-center gap-2">
               <span className="text-green-600 font-semibold">
@@ -297,12 +300,13 @@ export default function EditCurriculumUI({
                         <Lock className="text-gray-400" size={18} />
                       )}
                     </Button>
-                    {/* 수정 버튼 추가 */}
+
                     <Button
                       variant="ghost"
                       size="icon"
                       onClick={() => {
-                        /* TODO: 강의 수정 모달 오픈 */
+                        setEditLecture(lecture);
+                        setIsEditLectureDialogOpen(true);
                       }}
                       aria-label="강의 수정"
                     >
@@ -322,11 +326,12 @@ export default function EditCurriculumUI({
               ),
             )}
           </div>
-          <div className="mt-3 flex gap-2">
+          <div className="mt-3 flex w-full justify-center gap-2">
             <Button
               variant="outline"
               size="sm"
               onClick={() => openLectureDialog(section.id)}
+              className="bg-gray-50"
             >
               <Plus size={16} className="mr-1" /> 수업 추가
             </Button>
@@ -334,21 +339,14 @@ export default function EditCurriculumUI({
         </div>
       ))}
       {/* 섹션 추가 */}
-      <div className="border rounded-lg p-4 bg-gray-50">
-        <div className="flex items-center gap-2 mb-2">
-          <span className="text-green-600 font-semibold">섹션 추가</span>
-          <Input
-            className="w-64"
-            value={addSectionTitle}
-            onChange={(e) => setAddSectionTitle(e.target.value)}
-            placeholder="섹션 제목을 작성해주세요. (최대 200자)"
-            maxLength={200}
-          />
-          <Button onClick={handleAddSection} variant="default" size="sm">
-            추가
-          </Button>
-        </div>
-      </div>
+      <Button
+        onClick={handleAddSection}
+        variant="default"
+        size="lg"
+        className="mx-auto text-md font-bold"
+      >
+        섹션 추가
+      </Button>
 
       {/* 강의 추가 Dialog */}
       <Dialog open={lectureDialogOpen} onOpenChange={setLectureDialogOpen}>
@@ -375,6 +373,18 @@ export default function EditCurriculumUI({
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* 강의 수정 Dialog */}
+      {editLecture && (
+        <EditLectureDialog
+          isOpen={isEditLectureDialogOpen}
+          onClose={() => {
+            setIsEditLectureDialogOpen(false);
+            setEditLecture(null);
+          }}
+          lecture={editLecture}
+        />
+      )}
     </div>
   );
 }

@@ -7,14 +7,14 @@ export class LectureDto {
   @ApiProperty()
   title: string;
 
-  @ApiProperty({ required: false, nullable: true })
-  description: string | null;
+  @ApiProperty()
+  description: string;
 
   @ApiProperty()
   order: number;
 
-  @ApiProperty({ required: false, nullable: true })
-  duration: number | null;
+  @ApiProperty()
+  duration: number;
 
   @ApiProperty()
   isPreview: boolean;

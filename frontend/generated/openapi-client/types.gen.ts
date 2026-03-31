@@ -26,13 +26,9 @@ export type CategoryDto = {
 export type LectureDto = {
     id: string;
     title: string;
-    description?: {
-        [key: string]: unknown;
-    } | null;
+    description: string;
     order: number;
-    duration?: {
-        [key: string]: unknown;
-    } | null;
+    duration: number;
     isPreview: boolean;
     sectionId: string;
     courseId: string;
@@ -463,3 +459,22 @@ export type CategoriesControllerFindAllResponses = {
 };
 
 export type CategoriesControllerFindAllResponse = CategoriesControllerFindAllResponses[keyof CategoriesControllerFindAllResponses];
+
+export type MediaControllerUploadMediaData = {
+    body: {
+        /**
+         * 미디어 파일
+         */
+        file?: Blob | File;
+    };
+    path?: never;
+    query?: never;
+    url: '/media';
+};
+
+export type MediaControllerUploadMediaResponses = {
+    /**
+     * 미디어 업로드 성공
+     */
+    200: unknown;
+};
