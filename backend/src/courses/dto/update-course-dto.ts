@@ -27,10 +27,12 @@ export class UpdateCourseDto extends PartialType(CreateCourseDto) {
   @IsString()
   @IsOptional()
   level?: string;
-  @ApiProperty({ description: '코스 게시 여부', required: false })
-  @IsBoolean()
+
+  @ApiProperty({ description: '코스 상태', required: false })
+  @IsString()
   @IsOptional()
-  isPublished?: boolean;
+  status?: string;
+
   @ApiProperty({ description: '코스 카테고리 ID 배열', required: false })
   @IsArray()
   @IsUUID(undefined, { each: true })

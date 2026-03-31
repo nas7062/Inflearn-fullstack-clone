@@ -28,7 +28,7 @@ const steps = [
       },
       {
         label: "커버 이미지",
-        href: (id: string) => `/course/${id}/edit/cover-image`,
+        href: (id: string) => `/course/${id}/edit/coverImage`,
         description: undefined,
         key: "cover-image",
       },
