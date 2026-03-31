@@ -18,7 +18,7 @@ export class UpdateCourseDto extends PartialType(CreateCourseDto) {
   thumbnailUrl?: string;
   @ApiProperty({ description: '코스 가격' })
   @IsNumber()
-  price: number;
+  price?: number;
   @ApiProperty({ description: '코스 할인 가격', required: false })
   @IsNumber()
   @IsOptional()

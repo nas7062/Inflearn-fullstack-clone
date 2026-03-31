@@ -15,9 +15,8 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { FileVideo } from "lucide-react";
 import * as api from "@/lib/api";
 import { toast } from "sonner";
-import CKEditor from "@/components/CkEditor";
 import { LectureDto } from "@/generated/openapi-client";
-
+import ClientSideCustomEditor from "@/components/ClientCkEditor";
 interface EditLectureDialogProps {
   isOpen: boolean;
   onClose: () => void;
@@ -151,7 +150,7 @@ export function EditLectureDialog({
           </div>
           <div className="space-y-2">
             <Label htmlFor="note">수업 노트</Label>
-            <CKEditor
+            <ClientSideCustomEditor
               value={form.description}
               onChange={(value) =>
                 setForm((prev) => ({ ...prev, description: value }))

@@ -22,7 +22,7 @@ const steps = [
       },
       {
         label: "상세소개",
-        href: (id: string) => `/course/${id}/edit/description-builder`,
+        href: (id: string) => `/course/${id}/edit/descriptionBuilder`,
         description: "200자 이상 작성",
         key: "description-builder",
       },
