@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Providers from "@/config/providers";
-import { getAllCategories } from "@/lib/api";
+import { getAllCategories, getProfile } from "@/lib/api";
 import Header from "@/components/Header";
-import { CategoryDto } from "@/generated/openapi-client";
+import { CategoryDto, UserInfoDto } from "@/generated/openapi-client";
 import { Toaster } from "sonner";
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -27,14 +27,17 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const { data, error } = await getAllCategories();
-
+  const profile = await getProfile();
   return (
     <html lang="en">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <Providers>
-          <Header categories={data ?? ([] as CategoryDto[])} />
+          <Header
+            categories={data ?? ([] as CategoryDto[])}
+            profile={profile.data ?? ({} as UserInfoDto)}
+          />
           {children}
         </Providers>
         <Toaster />

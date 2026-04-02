@@ -99,9 +99,9 @@ export type UpdateCourseDto = {
      */
     level?: string;
     /**
-     * 코스 게시 여부
+     * 코스 상태
      */
-    isPublished?: boolean;
+    status?: string;
     /**
      * 코스 카테고리 ID 배열
      */
@@ -164,6 +164,44 @@ export type UpdateSectionDto = {
      * 섹션 순서
      */
     order?: number;
+};
+
+export type UserInfoDto = {
+    /**
+     * 이름
+     */
+    name?: string;
+    /**
+     * 이메일
+     */
+    email?: string;
+    /**
+     * 프로필 이미지 URL
+     */
+    image?: string;
+    /**
+     * 자기소개
+     */
+    bio?: string;
+    /**
+     * 이메일 인증
+     */
+    emailVerified?: string;
+};
+
+export type UpdateUserDto = {
+    /**
+     * 이름
+     */
+    name?: string;
+    /**
+     * 프로필 이미지 URL
+     */
+    image?: string;
+    /**
+     * 자기소개
+     */
+    bio?: string;
 };
 
 export type AppControllerGetHelloData = {
@@ -478,3 +516,35 @@ export type MediaControllerUploadMediaResponses = {
      */
     200: unknown;
 };
+
+export type UsersControllerGetProfileData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/users/profile';
+};
+
+export type UsersControllerGetProfileResponses = {
+    /**
+     * 코스 수정
+     */
+    200: UserInfoDto;
+};
+
+export type UsersControllerGetProfileResponse = UsersControllerGetProfileResponses[keyof UsersControllerGetProfileResponses];
+
+export type UsersControllerUpdateProfileData = {
+    body: UpdateUserDto;
+    path?: never;
+    query?: never;
+    url: '/users/profile';
+};
+
+export type UsersControllerUpdateProfileResponses = {
+    /**
+     * 코스 수정
+     */
+    200: UserInfoDto;
+};
+
+export type UsersControllerUpdateProfileResponse = UsersControllerUpdateProfileResponses[keyof UsersControllerUpdateProfileResponses];

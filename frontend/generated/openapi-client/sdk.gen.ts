@@ -2,7 +2,7 @@
 
 import { type Client, formDataBodySerializer, type Options as Options2, type TDataShape } from './client';
 import { client } from './client.gen';
-import type { AppControllerGetHelloData, AppControllerGetHelloResponses, AppControllerTestUserData, AppControllerTestUserResponses, CategoriesControllerFindAllData, CategoriesControllerFindAllResponses, CoursesControllerCreateData, CoursesControllerCreateResponses, CoursesControllerFindAllData, CoursesControllerFindAllResponses, CoursesControllerFindOneData, CoursesControllerFindOneResponses, CoursesControllerRemoveData, CoursesControllerRemoveResponses, CoursesControllerUpdateData, CoursesControllerUpdateResponses, LecturesControllerCreateData, LecturesControllerCreateResponses, LecturesControllerDeleteData, LecturesControllerDeleteResponses, LecturesControllerFindOneData, LecturesControllerFindOneResponses, LecturesControllerUpdateData, LecturesControllerUpdateResponses, MediaControllerUploadMediaData, MediaControllerUploadMediaResponses, SectionsControllerCreateData, SectionsControllerCreateResponses, SectionsControllerDeleteData, SectionsControllerDeleteResponses, SectionsControllerFindOneData, SectionsControllerFindOneResponses, SectionsControllerUpdateData, SectionsControllerUpdateResponses } from './types.gen';
+import type { AppControllerGetHelloData, AppControllerGetHelloResponses, AppControllerTestUserData, AppControllerTestUserResponses, CategoriesControllerFindAllData, CategoriesControllerFindAllResponses, CoursesControllerCreateData, CoursesControllerCreateResponses, CoursesControllerFindAllData, CoursesControllerFindAllResponses, CoursesControllerFindOneData, CoursesControllerFindOneResponses, CoursesControllerRemoveData, CoursesControllerRemoveResponses, CoursesControllerUpdateData, CoursesControllerUpdateResponses, LecturesControllerCreateData, LecturesControllerCreateResponses, LecturesControllerDeleteData, LecturesControllerDeleteResponses, LecturesControllerFindOneData, LecturesControllerFindOneResponses, LecturesControllerUpdateData, LecturesControllerUpdateResponses, MediaControllerUploadMediaData, MediaControllerUploadMediaResponses, SectionsControllerCreateData, SectionsControllerCreateResponses, SectionsControllerDeleteData, SectionsControllerDeleteResponses, SectionsControllerFindOneData, SectionsControllerFindOneResponses, SectionsControllerUpdateData, SectionsControllerUpdateResponses, UsersControllerGetProfileData, UsersControllerGetProfileResponses, UsersControllerUpdateProfileData, UsersControllerUpdateProfileResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean> = Options2<TData, ThrowOnError> & {
     /**
@@ -159,6 +159,22 @@ export const mediaControllerUploadMedia = <ThrowOnError extends boolean = false>
     ...options,
     headers: {
         'Content-Type': null,
+        ...options.headers
+    }
+});
+
+export const usersControllerGetProfile = <ThrowOnError extends boolean = false>(options?: Options<UsersControllerGetProfileData, ThrowOnError>) => (options?.client ?? client).get<UsersControllerGetProfileResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/users/profile',
+    ...options
+});
+
+export const usersControllerUpdateProfile = <ThrowOnError extends boolean = false>(options: Options<UsersControllerUpdateProfileData, ThrowOnError>) => (options.client ?? client).patch<UsersControllerUpdateProfileResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/users/profile',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
         ...options.headers
     }
 });

@@ -7,9 +7,16 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
 import { usePathname } from "next/navigation";
-import { CategoryDto } from "@/generated/openapi-client";
+import { CategoryDto, UserInfoDto } from "@/generated/openapi-client";
+import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 
-export default function Header({ categories }: { categories: CategoryDto[] }) {
+export default function Header({
+  categories,
+  profile,
+}: {
+  categories: CategoryDto[];
+  profile: UserInfoDto | undefined;
+}) {
   const pathname = usePathname();
   const isSiteHeaderNeeded = !pathname.includes("/courses");
   const isCategoryNeeded = pathname == "/" || pathname.includes("/courses");
@@ -92,6 +99,37 @@ export default function Header({ categories }: { categories: CategoryDto[] }) {
           </nav>
         )}
       </div>
+      <Popover>
+        <PopoverTrigger asChild>
+          <div className="ml-2 cursor-pointer">
+            <Avatar>
+              {profile?.image ? (
+                <img
+                  src={profile.image}
+                  alt="avatar"
+                  className="w-full h-full object-cover rounded-full"
+                />
+              ) : (
+                <AvatarFallback>
+                  <span role="img" aria-label="user">
+                    👤
+                  </span>
+                </AvatarFallback>
+              )}
+            </Avatar>
+          </div>
+        </PopoverTrigger>
+        <PopoverContent align="end" className="w-56 p-0">
+          <button
+            className="w-full text-left px-4 py-3 hover:bg-gray-100 focus:outline-none"
+            onClick={() => (window.location.href = "/my/settings/account")}
+          >
+            <div className="font-semibold text-gray-800">
+              {profile?.name || profile?.email || "내 계정"}
+            </div>
+          </button>
+        </PopoverContent>
+      </Popover>
     </header>
   );
 }
