@@ -3,7 +3,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateCourseDto } from './dto/create-course-dto';
 import { Course, Prisma } from '@prisma/client';
 import { UpdateCourseDto } from './dto/update-course-dto';
-import slugify from 'slug';
+import slugify from '../../lib/slugify';
 @Injectable()
 export class CoursesService {
   constructor(private readonly prisma: PrismaService) {}

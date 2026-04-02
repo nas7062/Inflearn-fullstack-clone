@@ -9,11 +9,16 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { usePathname } from "next/navigation";
 import { CategoryDto, UserInfoDto } from "@/generated/openapi-client";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
+import { CATEGORY_ICONS } from "@/constant/category-icons";
+import React from "react";
+import { Session } from "next-auth";
 
 export default function Header({
+  session,
   categories,
   profile,
 }: {
+  session: Session | null;
   categories: CategoryDto[];
   profile: UserInfoDto | undefined;
 }) {
@@ -74,13 +79,49 @@ export default function Header({
           </Button>
         </Link>
         {/* Avatar */}
-        <Avatar className="ml-2">
-          <AvatarFallback>
-            <span role="img" aria-label="user">
-              👤
-            </span>
-          </AvatarFallback>
-        </Avatar>
+        {session ? (
+          <Popover>
+            <PopoverTrigger asChild>
+              <div className="ml-2 cursor-pointer">
+                <Avatar>
+                  {profile?.image ? (
+                    <img
+                      src={profile.image}
+                      alt="avatar"
+                      className="w-full h-full object-cover rounded-full"
+                    />
+                  ) : (
+                    <AvatarFallback>
+                      <span role="img" aria-label="user">
+                        👤
+                      </span>
+                    </AvatarFallback>
+                  )}
+                </Avatar>
+              </div>
+            </PopoverTrigger>
+            <PopoverContent align="end" className="w-56 p-0">
+              <div className="px-4 py-3 border-b border-gray-100">
+                <div className="font-semibold text-gray-800">
+                  {profile?.name || profile?.email || "내 계정"}
+                </div>
+                {profile?.email && (
+                  <div className="text-xs text-gray-500 mt-1">
+                    {profile.email}
+                  </div>
+                )}
+              </div>
+            </PopoverContent>
+          </Popover>
+        ) : (
+          <Avatar className="ml-2">
+            <AvatarFallback>
+              <span role="img" aria-label="user">
+                👤
+              </span>
+            </AvatarFallback>
+          </Avatar>
+        )}
       </div>
       {/* 하단 카테고리 */}
       <div className="header-bottom bg-white px-8">
@@ -89,7 +130,13 @@ export default function Header({
             {categories.map((category) => (
               <Link key={category.id} href={`/courses/${category.slug}`}>
                 <div className="category-item flex flex-col items-center min-w-[72px] text-gray-700 hover:text-[#1dc078] cursor-pointer transition-colors">
-                  <Layers size={28} className="mb-1" />
+                  {React.createElement(
+                    CATEGORY_ICONS[category.slug] || CATEGORY_ICONS["default"],
+                    {
+                      size: 28,
+                      className: "mb-1",
+                    },
+                  )}
                   <span className="text-xs font-medium whitespace-nowrap">
                     {category.name}
                   </span>

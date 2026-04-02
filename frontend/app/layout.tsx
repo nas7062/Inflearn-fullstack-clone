@@ -6,6 +6,7 @@ import { getAllCategories, getProfile } from "@/lib/api";
 import Header from "@/components/Header";
 import { CategoryDto, UserInfoDto } from "@/generated/openapi-client";
 import { Toaster } from "sonner";
+import { auth } from "@/auth";
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -26,8 +27,12 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const { data, error } = await getAllCategories();
-  const profile = await getProfile();
+  const [session, profile, categories] = await Promise.all([
+    auth(),
+    getProfile(),
+    getAllCategories(),
+  ]);
+
   return (
     <html lang="en">
       <body
@@ -35,7 +40,8 @@ export default async function RootLayout({
       >
         <Providers>
           <Header
-            categories={data ?? ([] as CategoryDto[])}
+            session={session}
+            categories={categories.data ?? ([] as CategoryDto[])}
             profile={profile.data ?? ({} as UserInfoDto)}
           />
           {children}
