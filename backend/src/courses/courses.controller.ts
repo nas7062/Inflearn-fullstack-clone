@@ -45,6 +45,22 @@ export class CoursesController {
     return this.coursesService.create(req.user.sub, createCourseDto);
   }
 
+  @Get('search')
+  @ApiOkResponse({
+    description: '코스 검색',
+    type: SearchCourseResponseDto,
+  })
+  @ApiQuery({ name: 'q', required: false })
+  @ApiQuery({ name: 'category', required: false })
+  @ApiQuery({ name: 'charge', required: false })
+  @ApiQuery({ name: 'sortBy', required: false, enum: ['price'] })
+  @ApiQuery({ name: 'order', required: false, enum: ['asc', 'desc'] })
+  @ApiQuery({ name: 'page', required: false, default: 1 })
+  @ApiQuery({ name: 'pageSize', required: false, default: 20 })
+  search(@Query() searchCourseDto: SearchCourseDto): Promise<SearchCourseResponseDto> {
+    return this.coursesService.searchCourses(searchCourseDto);
+  }
+
   @Get()
   @ApiQuery({ name: 'title', required: false })
   @ApiQuery({ name: 'level', required: false })
@@ -137,21 +153,5 @@ export class CoursesController {
   @ApiBearerAuth('access-token')
   remove(@Param('id', ParseUUIDPipe) id: string, @Req() req: Request & { user: JwtPayload }) {
     return this.coursesService.remove(id, req.user.sub);
-  }
-
-  @Get('search')
-  @ApiOkResponse({
-    description: '코스 검색',
-    type: SearchCourseResponseDto,
-  })
-  @ApiQuery({ name: 'q', required: false })
-  @ApiQuery({ name: 'category', required: false })
-  @ApiQuery({ name: 'charge', required: false })
-  @ApiQuery({ name: 'sortBy', required: false, enum: ['price'] })
-  @ApiQuery({ name: 'order', required: false, enum: ['asc', 'desc'] })
-  @ApiQuery({ name: 'page', required: false, default: 1 })
-  @ApiQuery({ name: 'pageSize', required: false, default: 20 })
-  search(@Query() searchCourseDto: SearchCourseDto): Promise<SearchCourseResponseDto> {
-    return this.coursesService.searchCourses(searchCourseDto);
   }
 }

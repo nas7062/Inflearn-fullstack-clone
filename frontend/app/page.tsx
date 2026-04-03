@@ -1,26 +1,14 @@
-import { auth } from "@/auth";
-import { signOut } from "@/auth";
-import Link from "next/link";
+import CourseList from "@/components/CourseList";
 
-export default async function Home() {
-  const session = await auth();
-
+export default async function Home({
+  searchParams,
+}: {
+  searchParams: Promise<{ page_number?: string }>;
+}) {
+  const { page_number } = await searchParams;
   return (
-    <div>
-      <p>현재 로그인한 유저 보여주기</p>
-      <p>이메일 = {session?.user?.email}</p>
-      {session?.user ? (
-        <form
-          action={async () => {
-            "use server";
-            await signOut();
-          }}
-        >
-          <button type="submit">로그아웃</button>
-        </form>
-      ) : (
-        <Link href="/signin">로그인</Link>
-      )}
+    <div className="p-6">
+      <CourseList q={""} page={page_number ? parseInt(page_number) : 1} />
     </div>
   );
 }

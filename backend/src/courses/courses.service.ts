@@ -142,8 +142,8 @@ export class CoursesService {
     const courses = await this.prisma.course.findMany({
       where,
       orderBy,
-      skip,
-      take: pageSize,
+      skip: Number(skip),
+      take: Number(pageSize),
       include: {
         instructor: {
           select: {

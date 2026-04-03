@@ -1,6 +1,6 @@
 import { PartialType } from '@nestjs/swagger';
 import { CreateCourseDto } from './create-course-dto';
-import { IsArray, IsBoolean, IsNumber, IsOptional, IsString, IsUUID } from 'class-validator';
+import { IsArray, IsNumber, IsOptional, IsString, IsUUID } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 export class UpdateCourseDto extends PartialType(CreateCourseDto) {
   @ApiProperty({ description: '코스 짧은소개', required: false })

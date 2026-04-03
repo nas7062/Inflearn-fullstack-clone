@@ -3,6 +3,7 @@ import { LectureDto } from 'src/lectures/dto/lecture-dto';
 
 export class SectionDto {
   @ApiProperty()
+  
   id: string;
 
   @ApiProperty()

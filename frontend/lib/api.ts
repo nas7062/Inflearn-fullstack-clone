@@ -6,11 +6,15 @@ import {
   coursesControllerCreate,
   coursesControllerFindAll,
   coursesControllerFindOne,
+  coursesControllerSearch,
+  CoursesControllerSearchData,
   coursesControllerUpdate,
   lecturesControllerCreate,
   lecturesControllerDelete,
   lecturesControllerUpdate,
   mediaControllerUploadMedia,
+  SearchCourseDataDto,
+  SearchCourseResponseDto,
   sectionsControllerCreate,
   sectionsControllerDelete,
   sectionsControllerUpdate,
@@ -185,4 +189,21 @@ export const updateProfile = async (updateUserDto: UpdateUserDto) => {
   });
 
   return { data, error };
+};
+
+export const searchCourses = async (
+  query: CoursesControllerSearchData["query"],
+) => {
+  const { data, error } = await coursesControllerSearch({ query });
+
+  console.log(data);
+
+  if (error || !data) {
+    return {
+      data: null,
+      error,
+    };
+  }
+
+  return { data: data.data, error: null };
 };

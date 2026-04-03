@@ -69,6 +69,19 @@ export type CourseResponseDto = {
     enrollmentCount: number;
 };
 
+export type SearchCourseResponseDto = {
+    /**
+     * 성공 여부
+     */
+    success: boolean;
+    /**
+     * 데이터
+     */
+    data: {
+        [key: string]: unknown;
+    };
+};
+
 export type UpdateCourseDto = {
     /**
      * 코스 제목
@@ -264,6 +277,51 @@ export type CoursesControllerCreateResponses = {
 };
 
 export type CoursesControllerCreateResponse = CoursesControllerCreateResponses[keyof CoursesControllerCreateResponses];
+
+export type CoursesControllerSearchData = {
+    body?: never;
+    path?: never;
+    query?: {
+        /**
+         * 검색 키워드
+         */
+        q?: string;
+        /**
+         * 카테고리 ID
+         */
+        category?: string;
+        /**
+         * 무료 또는 All
+         */
+        charge?: 'all' | 'free';
+        /**
+         * 정렬 기준
+         */
+        sortBy?: 'price';
+        /**
+         * 정렬 순서
+         */
+        order?: 'asc' | 'desc';
+        /**
+         * 페이지 번호
+         */
+        page?: number;
+        /**
+         * 페이지당 결과 수
+         */
+        pageSize?: number;
+    };
+    url: '/courses/search';
+};
+
+export type CoursesControllerSearchResponses = {
+    /**
+     * 코스 검색
+     */
+    200: SearchCourseResponseDto;
+};
+
+export type CoursesControllerSearchResponse = CoursesControllerSearchResponses[keyof CoursesControllerSearchResponses];
 
 export type CoursesControllerRemoveData = {
     body?: never;

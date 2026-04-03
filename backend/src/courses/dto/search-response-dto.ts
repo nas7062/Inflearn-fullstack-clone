@@ -18,18 +18,13 @@ export class PaginationDto {
   hasPrev: boolean;
 }
 
-export class SearchCourseDataDto {
-  @ApiProperty({ description: '강의 목록', isArray: true })
-  courses: CourseResponseDto[];
-
-  @ApiProperty({ description: '페이지네이션 정보', type: PaginationDto })
-  pagination: PaginationDto;
-}
-
 export class SearchCourseResponseDto {
-  @ApiProperty({ description: '성공 여부', default: true })
+  @ApiProperty({ description: '성공 여부' })
   success: boolean;
 
-  @ApiProperty({ description: '응답 데이터', type: SearchCourseDataDto })
-  data: SearchCourseDataDto;
+  @ApiProperty({ description: '데이터' })
+  data: {
+    courses: CourseResponseDto[];
+    pagination: PaginationDto;
+  };
 }
