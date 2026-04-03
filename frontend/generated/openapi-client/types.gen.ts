@@ -69,17 +69,42 @@ export type CourseResponseDto = {
     enrollmentCount: number;
 };
 
+export type PaginationDto = {
+    /**
+     * 현재 페이지
+     */
+    currentPage: number;
+    /**
+     * 전체 페이지 수
+     */
+    totalPages: number;
+    /**
+     * 전체 아이템 수
+     */
+    totalItems: number;
+    /**
+     * 다음 페이지 존재 여부
+     */
+    hasNext: boolean;
+    /**
+     * 이전 페이지 존재 여부
+     */
+    hasPrev: boolean;
+};
+
 export type SearchCourseResponseDto = {
     /**
      * 성공 여부
      */
     success: boolean;
     /**
-     * 데이터
+     * 강의 목록
      */
-    data: {
-        [key: string]: unknown;
-    };
+    courses: Array<CourseResponseDto>;
+    /**
+     * 페이지네이션 정보
+     */
+    pagination: PaginationDto;
 };
 
 export type UpdateCourseDto = {

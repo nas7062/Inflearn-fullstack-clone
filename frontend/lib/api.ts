@@ -13,7 +13,6 @@ import {
   lecturesControllerDelete,
   lecturesControllerUpdate,
   mediaControllerUploadMedia,
-  SearchCourseDataDto,
   SearchCourseResponseDto,
   sectionsControllerCreate,
   sectionsControllerDelete,
@@ -193,7 +192,10 @@ export const updateProfile = async (updateUserDto: UpdateUserDto) => {
 
 export const searchCourses = async (
   query: CoursesControllerSearchData["query"],
-) => {
+): Promise<{
+  data: SearchCourseResponseDto | null;
+  error: Error | null;
+}> => {
   const { data, error } = await coursesControllerSearch({ query });
 
   console.log(data);
@@ -201,9 +203,9 @@ export const searchCourses = async (
   if (error || !data) {
     return {
       data: null,
-      error,
+      error: error as Error,
     };
   }
 
-  return { data: data.data, error: null };
+  return { data, error: null };
 };

@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { CourseResponseDto } from './response-course-dto';
+import { IsArray } from 'class-validator';
 
 export class PaginationDto {
   @ApiProperty({ description: '현재 페이지' })
@@ -22,9 +23,9 @@ export class SearchCourseResponseDto {
   @ApiProperty({ description: '성공 여부' })
   success: boolean;
 
-  @ApiProperty({ description: '데이터' })
-  data: {
-    courses: CourseResponseDto[];
-    pagination: PaginationDto;
-  };
+  @ApiProperty({ description: '강의 목록', isArray: true, type: CourseResponseDto })
+  @IsArray()
+  courses: CourseResponseDto[];
+  @ApiProperty({ description: '페이지네이션 정보', type: PaginationDto })
+  pagination: PaginationDto;
 }

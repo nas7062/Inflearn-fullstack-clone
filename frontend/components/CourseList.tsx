@@ -40,7 +40,7 @@ export default async function CourseList({
     page,
     pageSize,
   });
-  console.log(data);
+
   if (error) {
     return (
       <div className="flex h-64 items-center justify-center">
@@ -56,7 +56,7 @@ export default async function CourseList({
     );
   }
 
-  if (!data?.courses || data.courses.length === 0) {
+  if (!data) {
     return (
       <div className="flex h-64 items-center justify-center">
         <div className="text-center">
@@ -80,7 +80,7 @@ export default async function CourseList({
     }
     if (sortBy) params.set("sortBy", sortBy);
     if (order) params.set("order", order);
-    params.set("page", pageNumber.toString());
+    params.set("page_number", pageNumber.toString());
     if (pageSize !== 20) params.set("pageSize", pageSize.toString());
 
     return `${baseUrl}?${params.toString()}`;
