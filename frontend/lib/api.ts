@@ -198,8 +198,6 @@ export const searchCourses = async (
 }> => {
   const { data, error } = await coursesControllerSearch({ query });
 
-  console.log(data);
-
   if (error || !data) {
     return {
       data: null,

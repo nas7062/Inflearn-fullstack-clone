@@ -78,11 +78,7 @@ export default async function CourseList({
     if (charge) {
       params.set("charge", charge);
     }
-    if (sortBy) params.set("sortBy", sortBy);
-    if (order) params.set("order", order);
     params.set("page_number", pageNumber.toString());
-    if (pageSize !== 20) params.set("pageSize", pageSize.toString());
-
     return `${baseUrl}?${params.toString()}`;
   };
 

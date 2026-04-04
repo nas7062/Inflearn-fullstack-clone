@@ -196,7 +196,7 @@ export default function EditCurriculumUI({
         lecture.id,
         !lecture.isPreview,
       );
-      console.log(data, error);
+     
       if (error) {
         toast.error(error as string);
         return null;

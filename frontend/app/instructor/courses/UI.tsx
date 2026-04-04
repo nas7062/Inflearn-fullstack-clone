@@ -77,7 +77,6 @@ export default function UI({ courses }: { courses: CourseResponseDto[] }) {
                       onClick={() => {
                         const confirmed =
                           window.confirm("정말 삭제하시겠습니까?");
-                        console.log(confirmed);
                       }}
                       variant="destructive"
                       size="sm"

@@ -6,11 +6,11 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { CategoryDto, UserInfoDto } from "@/generated/openapi-client";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { CATEGORY_ICONS } from "@/constant/category-icons";
-import React from "react";
+import React, { useState } from "react";
 import { Session } from "next-auth";
 
 export default function Header({
@@ -25,7 +25,8 @@ export default function Header({
   const pathname = usePathname();
   const isSiteHeaderNeeded = !pathname.includes("/courses");
   const isCategoryNeeded = pathname == "/" || pathname.includes("/courses");
-
+  const [search, setSearch] = useState("");
+  const router = useRouter();
   if (!isSiteHeaderNeeded) return null;
   return (
     <header className="site-header w-full border-b bg-white">
@@ -57,13 +58,25 @@ export default function Header({
           <div className="relative flex w-full max-w-xl items-center">
             <Input
               type="text"
+              value={search}
               placeholder="나의 진짜 성장을 도와줄 실무 강의를 찾아보세요"
               className="w-full bg-gray-50 border-gray-200 focus-visible:ring-[#1dc078] pr-10"
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  if (search.trim() === "") return;
+                  else router.push(`/search?q=${search}`);
+                }
+              }}
+              onChange={(e) => setSearch(e.target.value)}
             />
             <button
               type="button"
               className="absolute right-2 p-1 text-gray-400 hover:text-[#1dc078] transition-colors"
               tabIndex={-1}
+              onClick={() => {
+                if (search.trim() === "") return;
+                else router.push(`/search?q=${search}`);
+              }}
             >
               <Search size={20} />
             </button>
