@@ -6,6 +6,7 @@ import { UpdateCourseDto } from './dto/update-course-dto';
 import slugify from '../../lib/slugify';
 import { SearchCourseResponseDto } from './dto/search-response-dto';
 import { SearchCourseDto } from './dto/search-coures-dto';
+import { CourseDetailDto } from './dto/course-detail-dto';
 @Injectable()
 export class CoursesService {
   constructor(private readonly prisma: PrismaService) {}
@@ -37,18 +38,77 @@ export class CoursesService {
       orderBy,
     });
   }
-  async findOne(id: string, include?: Prisma.CourseInclude): Promise<Course | null> {
-    const includeObject = {};
-
+  async findOne(id: string): Promise<CourseDetailDto | null> {
     const course = await this.prisma.course.findUnique({
       where: { id },
-      include,
+      include: {
+        instructor: true,
+        categories: true,
+        reviews: {
+          include: {
+            user: {
+              select: {
+                id: true,
+                name: true,
+                image: true,
+              },
+            },
+          },
+          orderBy: {
+            createdAt: 'desc',
+          },
+        },
+        enrollments: true,
+        sections: {
+          include: {
+            lectures: {
+              select: {
+                id: true,
+                title: true,
+                duration: true,
+                order: true,
+                isPreview: true,
+              },
+              orderBy: {
+                order: 'asc',
+              },
+            },
+          },
+          orderBy: {
+            order: 'asc',
+          },
+        },
+        _count: {
+          select: {
+            lectures: true,
+            enrollments: true,
+            reviews: true,
+          },
+        },
+      },
     });
 
     if (!course) {
       throw new NotFoundException('course를 찾을 수 없습니다.');
     }
-    return course;
+    const averageRating =
+      course.reviews.length > 0
+        ? course.reviews.reduce((acc, review) => acc + review.rating, 0) / course.reviews.length
+        : 0;
+
+    const totalDuration = course.sections.reduce(
+      (acc, section) => acc + section.lectures.reduce((acc, lecture) => acc + (lecture.duration ?? 0), 0),
+      0,
+    );
+    const result = {
+      ...course,
+      totalEnrollmentCount: course._count.enrollments,
+      averageRating: Math.round(averageRating * 10) / 10,
+      totalReviewCount: course._count.reviews,
+      totalLectureCount: course._count.lectures,
+      totalDuration,
+    };
+    return result as unknown as CourseDetailDto;
   }
   async update(id: string, userId: string, updateCourseDto: UpdateCourseDto): Promise<Course | null> {
     const course = await this.findOne(id);

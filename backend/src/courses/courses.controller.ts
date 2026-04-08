@@ -12,15 +12,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { CoursesService } from './courses.service';
-import {
-  ApiBearerAuth,
-  ApiCreatedResponse,
-  ApiOkResponse,
-  ApiOperation,
-  ApiParam,
-  ApiQuery,
-  ApiTags,
-} from '@nestjs/swagger';
+import { ApiBearerAuth, ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { AccessTokenGuard } from 'src/auth/guards/access-token.guard';
 import { CreateCourseDto } from './dto/create-course-dto';
 import { JwtPayload } from 'src/types/express';
@@ -29,6 +21,7 @@ import { UpdateCourseDto } from './dto/update-course-dto';
 import { CourseResponseDto } from './dto/response-course-dto';
 import { SearchCourseResponseDto } from './dto/search-response-dto';
 import { SearchCourseDto } from './dto/search-coures-dto';
+import { CourseDetailDto } from './dto/course-detail-dto';
 
 @ApiTags('코스')
 @Controller('courses')
@@ -102,39 +95,12 @@ export class CoursesController {
       },
     });
   }
+
   @Get(':id')
-  @ApiQuery({ name: 'include', required: false, description: 'section,lectures, review 포함 관계 지정' })
-  @ApiOkResponse({ description: '코스 상세 조회', type: CourseResponseDto })
-  findOne(@Param('id', ParseUUIDPipe) id: string, @Query('include') include?: string) {
-    const includeArray = include ? include.split(',') : undefined;
-    let includeObject: Prisma.CourseInclude = {};
-    if (includeArray?.includes('sections') && includeArray.includes('lectures')) {
-      const otherInclude = includeArray.filter((item) => !['sections', 'lectures'].includes(item));
-      includeObject = {
-        sections: {
-          include: {
-            lectures: {
-              orderBy: {
-                order: 'asc',
-              },
-            },
-          },
-          orderBy: {
-            order: 'asc',
-          },
-        },
-        ...otherInclude.map((item) => ({
-          [item]: true,
-        })),
-      };
-    } else {
-      includeObject = {
-        ...includeArray?.map((item) => ({
-          [item]: true,
-        })),
-      } as Prisma.CourseInclude;
-    }
-    return this.coursesService.findOne(id, includeObject);
+  @ApiQuery({ required: false, description: '코스 상세 조회' })
+  @ApiOkResponse({ description: '코스 상세 조회', type: CourseDetailDto })
+  findOne(@Param('id', ParseUUIDPipe) id: string) {
+    return this.coursesService.findOne(id);
   }
 
   @Patch(':id')
