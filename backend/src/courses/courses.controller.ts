@@ -22,6 +22,9 @@ import { CourseResponseDto } from './dto/response-course-dto';
 import { SearchCourseResponseDto } from './dto/search-response-dto';
 import { SearchCourseDto } from './dto/search-coures-dto';
 import { CourseDetailDto } from './dto/course-detail-dto';
+import { AddFavoriteResponseDto } from './dto/add-favorite-dto';
+import { OptionalAccessTokenGuard } from 'src/auth/guards/optinal-access-token.guard';
+import { FavoriteResponseDto } from './dto/favorite-dto';
 
 @ApiTags('코스')
 @Controller('courses')
@@ -119,5 +122,41 @@ export class CoursesController {
   @ApiBearerAuth('access-token')
   remove(@Param('id', ParseUUIDPipe) id: string, @Req() req: Request & { user: JwtPayload }) {
     return this.coursesService.remove(id, req.user.sub);
+  }
+
+  @Post(':id/favorite')
+  @UseGuards(AccessTokenGuard)
+  @ApiBearerAuth('access-token')
+  @ApiOperation({ summary: '코스 즐겨찾기 추가' })
+  @ApiOkResponse({ description: '코스 즐겨찾기 추가 성공', type: Boolean })
+  addFavorite(@Param('id', ParseUUIDPipe) id: string, @Req() req: Request & { user: JwtPayload }) {
+    return this.coursesService.addFavorite(id, req.user.sub);
+  }
+
+  @Delete(':id/favorite')
+  @UseGuards(AccessTokenGuard)
+  @ApiBearerAuth('access-token')
+  @ApiOperation({ summary: '코스 즐겨찾기 삭제' })
+  @ApiOkResponse({ description: '코스 즐겨찾기 삭제 성공', type: Boolean })
+  removeFavorite(@Param('id', ParseUUIDPipe) id: string, @Req() req: Request & { user: JwtPayload }) {
+    return this.coursesService.removeFavorite(id, req.user.sub);
+  }
+
+  @Get(':id/favorite')
+  @UseGuards(OptionalAccessTokenGuard)
+  @ApiBearerAuth('access-token')
+  @ApiOperation({ summary: '코스 즐겨찾기 조회' })
+  @ApiOkResponse({ description: '코스 즐겨찾기 조회 성공', type: FavoriteResponseDto })
+  getFavorite(@Param('id', ParseUUIDPipe) id: string, @Req() req: Request & { user: JwtPayload }) {
+    return this.coursesService.getFavorite(id, req.user.sub);
+  }
+
+  @Get('favorites/my')
+  @UseGuards(AccessTokenGuard)
+  @ApiBearerAuth('access-token')
+  @ApiOperation({ summary: '내 즐겨찾기 조회' })
+  @ApiOkResponse({ description: '내 즐겨찾기 조회 성공', type: FavoriteResponseDto, isArray: true })
+  getFavorites(@Req() req: Request & { user: JwtPayload }) {
+    return this.coursesService.getMyFavorites(req.user.sub);
   }
 }

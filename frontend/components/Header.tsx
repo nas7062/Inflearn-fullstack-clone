@@ -23,7 +23,9 @@ export default function Header({
   profile: UserInfoDto | undefined;
 }) {
   const pathname = usePathname();
-  const isSiteHeaderNeeded = !pathname.includes("/courses");
+  const isSiteHeaderNeeded = !pathname.match(
+    /^\/course\/[0-9a-f-]+(\/edit|\/edit\/.*)$/,
+  );
   const isCategoryNeeded = pathname == "/" || pathname.includes("/courses");
   const [search, setSearch] = useState("");
   const router = useRouter();
